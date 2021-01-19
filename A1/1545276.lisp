@@ -55,21 +55,86 @@ I don't fucking know
 #| QUESTION 5
 |#
 (defun allsubsets (L)
-     (gen-subsets (cons nil nil) L)
+    (cond
+        ((null L) '(()))
+        (T (gen-subsets (car L) (allsubsets (cdr L))))
+    )
+
 )
 
-(defun gen-subsets (L1 L2)
+(defun gen-subsets (x y)
     (cond
-        ((null L1) L2)
-        (T (cons (car L1) (gen-subsets (cdr L1) L2)))
+       ((null y) NIL)
+       (T (cons (car y) 
+            (cons (cons x (car y)) 
+                (gen-subsets x (cdr y)))))
     )
+)
+
+#| QUESTION 6
+|#
+
+(defun reached (x L)
+    (cond 
+       ((null L) NIL)
+       ((equal x (caar L)) (cons (cadar L) (reached x (cdr L))))
+       (T (reached x (cdr L)))
+    )
+)
+
+
+(defun depair (L)
+    (cond
+        ((null L) NIL)
+        (T (cons (caar L) (depair (cdr L))))
+    )
+)
+
+(defun rank (S L)
+    (depair (mySort (compileFrequencies S L)))
+)
+
+(defun len (L)
+    (if (null L) 0
+        (+ 1 (len (cdr L)))
+    )
+)
+
+(defun referTo (x L)
+    (cond
+        ((null L) NIL)
+        ((equal x (cadar L)) (cons (caar L) (referTo x (cdr L))))
+        (T (referTo x (cdr L)))
+    )
+)
+
+(defun compileFrequencies (S L)
+    (cond
+       ((null S) NIL)    
+       (T (cons (cons (car S) (len (referTo (car S) L))) (compileFrequencies (cdr S) L)))
+    )
+)
+
+(defun mySort (L)
+    (sort L 'compareFunc)
+)
+
+(defun compareFunc (X Y)
+    (> (cdr X) (cdr Y))
 )
 
 ;; (print (xmember NIL '(NIL) ))
 ;; (print (flatten '(1 2 (2))))
 ;; (print (remove-duplicate '(a b c a d b)))
-;; (print (mix'(1 2 3) nil))
-(print (allsubsets '(a b)))
+;; (print (mix'(1 2 3) '(4 5 6)))
+;; (print (allsubsets '(a b)))
+;; (print (reached 1 '((2 3) (1 3) (2 3))))
+;; (print (len '(1 2 3 7)))
+;; (print (compileFrequencies '(a b c d) '((a b) (a c) (b c) (d a))))
+;;  (print (referTo 3 '((1 2) (1 3) (2 3))))
+;; (print (equal 3 (cadar '((2 3)))))
+;; (print (mySort '((a 2) (b 9) (s 4))))
+;; (print (rank '(a b c d) '((a b) (a c) (b c) (d a) (d b))))
 (terpri)
     
     
