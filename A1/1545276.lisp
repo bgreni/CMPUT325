@@ -69,23 +69,39 @@ L1 and L2, so that on the next recusive call, the first item in L2 will be choos
 )
 
 #| QUESTION 5
+Generates the powerset of a given list L
 |#
 (defun allsubsets (L)
-    (cond
-        ((null L) '(()))
-        (T (gen-subsets (car L) (allsubsets (cdr L))))
-    )
+"
+Checks if L is null, then returns empty list
+Otherwise, returns powerset of the list
+"
+    ;; (cond
+    ;;     ((null L) '(()))
+    ;;     (T (gen-subsets (car L) (allsubsets (cdr L))))
+    ;; )
+    (gen-subsets (cons NIL NIL) L)
 
 )
 
-(defun gen-subsets (x y)
-    (cond
-       ((null y) NIL)
-       (T (cons (car y) 
-            (cons (cons x (car y)) 
-                (gen-subsets x (cdr y)))))
+(defun gen-subsets (AC L)
+    (cond 
+        ((null L) NIL)
+        (T (append AC (gen-s)
     )
 )
+
+;; (defun gen-subsets (x y)
+;; "
+
+;; "
+;;     (cond
+;;        ((null y) NIL)
+;;        (T (cons (car y) 
+;;             (cons (cons x (car y)) 
+;;                 (gen-subsets x (cdr y)))))
+;;     )
+;; )
 
 #| QUESTION 6
 Contains definitions for both the reached and ranked functions
@@ -93,18 +109,26 @@ Contains definitions for both the reached and ranked functions
 
 (defun reached (x L)
 "
-Given and atom x and a list of pairs (a b), returns all items b that are paired with a, such that a == x
-In the context of the question, returns all sites b, that can be reached from site x
-Testcase: (reached 1 '((2 3) (1 3) (2 1))) => (3)
+Given and atom x and a list of pairs (a b), returns all items such that there is a sequence of links such that c is reachable from a
 
-If L is empty returns NIL
-Then checks if x is equal to the first element in the first pair of L, then adds the second item in the pair to the list
-otherwise cuts off that pair in a recursive call
+(reached 'google '( (google shopify) (google aircanada) (amazon aircanada) (aircanada delta) (google google) )) -> (SHOPIFY AIRCANADA DELTA)
+"
+    (linked (list x) L)
+)
+
+(defun linked (seen L)
+"
+If L is null then returns cdr seen (the first element will be x, so we remove it)
+Otherwise checks that the first item in the front pair of the list has been seen, confirming that there exists a path from our root page to the other page in the front pair
+that the second item in the front pair in the list is not in seen to avoid circular paths
+Otherwise, skips the current pairing at the front of the list 
 "
     (cond 
-       ((null L) NIL)
-       ((equal x (caar L)) (cons (cadar L) (reached x (cdr L))))
-       (T (reached x (cdr L)))
+        ((null L) 
+            (cdr seen))
+        ((and (xmember (caar L) seen) (not (xmember (cadar L) seen)))
+            (linked (append seen (cdar L)) (cdr L)))
+        (T (linked seen (cdr L)))
     )
 )
 
@@ -185,7 +209,11 @@ Given two pairs X and Y of the form (A B), returns true of X.B > Y.B
 ;; (print (flatten '(1 2 (2))))
 ;; (print (remove-duplicate '(a b c a d b)))
 ;; (print (mix'(1 3 5) '(2 4 6)))
-;; (print (allsubsets '(a b)))
+(print (allsubsets '(a b)))
+;; (print (reached 'google '( (google shopify) (google aircanada) (amazon aircanada))))
+;; (print (reached 'google '( (google shopify) (shopify amazon) (amazon google) ) ))
+;; (print (reached 'google '( (google shopify) (shopify amazon) (amazon indigo)  )))
+;; (print (reached 'google '( (google shopify) (google aircanada) (amazon aircanada) (aircanada delta) (google google) )) )
 ;; (print (reached 1 '((2 3) (1 3) (2 1))))
 ;; (print (len '(1 2 3 7)))
 ;; (print (compileFrequencies '(a b c d) '((a b) (a c) (b c) (d a) (a b) (c b))))
