@@ -12,9 +12,14 @@ NIL will be returned
 |#
 (defun xmember (X Y)
     (cond
-      ((equal X (car Y)) T)
-      ((null Y) NIL)
-      (T (xmember X (cdr Y)))
+        ((atom Y)
+            NIL)
+        ((equal X (car Y)) 
+            T)
+        ((null Y) 
+            NIL)
+        (T 
+            (xmember X (cdr Y)))
     )
 )
 
@@ -30,9 +35,12 @@ otherwise, the flattened version of the first in the list is appended with the f
 |#
 (defun flatten (x)
     (cond 
-        ((null x) NIL)
-        ((atom (car x)) (cons (car x) (flatten (cdr x))))
-        (T (append (flatten (car x)) (flatten (cdr x))))
+        ((null x) 
+            NIL)
+        ((atom (car x)) 
+            (cons (car x) (flatten (cdr x))))
+        (T 
+            (append (flatten (car x)) (flatten (cdr x))))
     )
 )
 
@@ -45,9 +53,12 @@ otherwise combines the first item in the list, with the de-duplicated version of
 |#
 (defun remove-duplicate (x)
     (cond 
-        ((null x) NIL)
-        ((xmember (car x) (cdr x)) (remove-duplicate (cdr x)))
-        (T (cons (car x ) (remove-duplicate (cdr x))))
+        ((null x) 
+            NIL)
+        ((xmember (car x) (cdr x)) 
+            (remove-duplicate (cdr x)))
+        (T (cons (car x ) 
+            (remove-duplicate (cdr x))))
     )
 )
 
@@ -62,9 +73,12 @@ L1 and L2, so that on the next recusive call, the first item in L2 will be choos
 |#
 (defun mix (L1 L2)
     (cond 
-        ((null L1) L2)
-        ((null L2) L1)
-        (T (cons (car L1) (mix L2 (cdr L1))))
+        ((null L1) 
+            L2)
+        ((null L2) 
+            L1)
+        (T (cons (car L1) 
+            (mix L2 (cdr L1))))
     )
 )
 
@@ -74,39 +88,39 @@ Generates the powerset of a given list L
 (defun allsubsets (L)
 "
 Checks if L is null, then returns empty list
-Otherwise, returns powerset of the list
+Otherwise, returns powerset of the lists
+
 "
-    ;; (cond
-    ;;     ((null L) '(()))
-    ;;     (T (gen-subsets (car L) (allsubsets (cdr L))))
-    ;; )
-    (gen-subsets (cons NIL NIL) L)
+    (cond
+        ((null L) 
+            '(()))
+        (T (gen-subsets (car L) 
+            (allsubsets (cdr L))))
+    )
+) 
 
-)
+(defun gen-subsets (x y)
+"
+x is single element and y is the currentl powerset
 
-(defun gen-subsets (AC L)
-    (cond 
-        ((null L) NIL)
-        (T (append AC (gen-s)
+if y is null return nill
+otherwise conse the first element in the powerset with the cons of x and the first element in y, and then
+with the powerset of x and the remaining elements in y
+"
+    (cond
+        ((null y) 
+            NIL)
+        (T (cons 
+            (car y) (cons 
+                (cons x (car y)) (gen-subsets x (cdr y)))))
     )
 )
-
-;; (defun gen-subsets (x y)
-;; "
-
-;; "
-;;     (cond
-;;        ((null y) NIL)
-;;        (T (cons (car y) 
-;;             (cons (cons x (car y)) 
-;;                 (gen-subsets x (cdr y)))))
-;;     )
-;; )
 
 #| QUESTION 6
 Contains definitions for both the reached and ranked functions
 |#
 
+; START OF REACHED FUNCTIONS
 (defun reached (x L)
 "
 Given and atom x and a list of pairs (a b), returns all items such that there is a sequence of links such that c is reachable from a
@@ -132,18 +146,7 @@ Otherwise, skips the current pairing at the front of the list
     )
 )
 
-
-(defun depair (L)
-"
-Given a list of pairs (a b), returns a list containing only the first value in each pair
-Testcase: (depair '((1 2))) => (1)
-"
-    (cond
-        ((null L) NIL)
-        (T (cons (caar L) (depair (cdr L))))
-    )
-)
-
+; START OF RANK FUNCTIONS
 (defun rank (S L)
 "
 Prints the list of elemets in S sorted by how many times they appear as B in a list of pairs (A B) L
@@ -158,11 +161,25 @@ The importance value is then removed from the pairs and the list of members of S
     (depair (mySort (compileFrequencies S L)))
 )
 
+(defun depair (L)
+"
+Given a list of pairs (a b), returns a list containing only the first value in each pair
+Testcase: (depair '((1 2))) => (1)
+"
+    (cond
+        ((null L) 
+            NIL)
+        (T (cons (caar L) 
+            (depair (cdr L))))
+    )
+)
+
 (defun len (L)
 "
 Returns the length of a list L
 "
-    (if (null L) 0
+    (if (null L) 
+        0
         (+ 1 (len (cdr L)))
     )
 )
@@ -173,10 +190,14 @@ Creates a list of elements from a list of pairs L (A B), where B == X, compiling
 Testcase: (referTo 3 '((1 2) (1 3) (2 3))) => (1 2)
 "
     (cond
-        ((null L) NIL)
-        ((xmember (car L) seen) (referTo x (cdr L) seen))
-        ((equal x (cadar L)) (cons (caar L) (referTo x (cdr L) (cons (car L) seen))))
-        (T (referTo x (cdr L) seen))
+        ((null L) 
+            NIL)
+        ((xmember (car L) seen) 
+            (referTo x (cdr L) seen))
+        ((equal x (cadar L)) 
+            (cons (caar L) (referTo x (cdr L) (cons (car L) seen))))
+        (T 
+            (referTo x (cdr L) seen))
     )
 )
 
@@ -186,13 +207,18 @@ Goes through the elements in a list S, and compiles the number of times it appea
 Testcase: (compileFrequencies '(a b c d) '((a b) (a c) (b c) (d a))) => ((A . 1) (B . 1) (C . 2) (D . 0))
 "
     (cond
-       ((null S) NIL)    
-       (T (cons (cons (car S) (len (referTo (car S) L NIL))) (compileFrequencies (cdr S) L)))
+       ((null S) 
+            NIL)    
+       (T 
+        (cons 
+            (cons 
+                (car S) (len (referTo (car S) L NIL))) 
+            (compileFrequencies (cdr S) L)))
     )
 )
 
 (defun mySort (L)
-"
+" 
 sorts a list of pair (A B) where B is an integer in increasing order by B
 "
     (sort L 'compareFunc)
@@ -205,22 +231,40 @@ Given two pairs X and Y of the form (A B), returns true of X.B > Y.B
     (> (cdr X) (cdr Y))
 )
 
-;; (print (xmember NIL '(NIL) ))
-;; (print (flatten '(1 2 (2))))
-;; (print (remove-duplicate '(a b c a d b)))
-;; (print (mix'(1 3 5) '(2 4 6)))
-(print (allsubsets '(a b)))
-;; (print (reached 'google '( (google shopify) (google aircanada) (amazon aircanada))))
-;; (print (reached 'google '( (google shopify) (shopify amazon) (amazon google) ) ))
-;; (print (reached 'google '( (google shopify) (shopify amazon) (amazon indigo)  )))
-;; (print (reached 'google '( (google shopify) (google aircanada) (amazon aircanada) (aircanada delta) (google google) )) )
-;; (print (reached 1 '((2 3) (1 3) (2 1))))
-;; (print (len '(1 2 3 7)))
-;; (print (compileFrequencies '(a b c d) '((a b) (a c) (b c) (d a) (a b) (c b))))
-;;  (print (referTo 3 '((1 2) (1 3) (2 3))))
-;; (print (equal 3 (cadar '((2 3)))))
-;; (print (mySort '((a 2) (b 9) (s 4))))
-;; (print (rank '(a b c d) '((a b) (a c) (b c) (d a) (d b))))
+(assert (equal (xmember '1 '(1)) T))
+(assert (equal (xmember '1 '( (1) 2 3)) NIL))
+(assert (equal (xmember '(1) '((1) 2 3)) T))
+(assert (equal (xmember nil nil) NIL))
+(assert (equal (xmember nil '(nil)) T))
+(assert (equal (xmember nil '((nil))) NIL))
+(assert (equal (xmember '(nil) '(1 2 3 (nil))) T))
+(assert (equal (xmember '(nil) '(nil)) NIL))
+
+(assert (equal (flatten '(a (b c) d)) '(a b c d)))
+(assert (equal (flatten '((((a)))))  '(a)))
+(assert (equal (flatten '(a (b c) (d ((e)) f))) '(a b c d e f)))
+
+(assert (equal (remove-duplicate '(a b c a d b)) '(c a d b)))
+
+(assert (equal (mix '(a b c) '(d e f)) '(a d b e c f)))
+(assert (equal (mix '(1 2 3) '(a)) '(1 a 2 3)))
+(assert (equal (mix '((a) (b c)) '(d e f g h))  '((a) d  (b c) e f g h)))
+(assert (equal (mix '(1 2 3) nil) '(1 2 3)))
+(assert (equal (mix '(1 2 3) '(nil)) '( 1 NIL 2 3)))
+
+(assert (equal (allsubsets nil) '(nil)))
+(assert (equal (allsubsets '(a)) '(nil (a))))
+(assert (equal (allsubsets '(a b)) '(nil (a) (b) (a b))))
+
+(assert (equal (reached 'google '( (google shopify) (google aircanada) (amazon aircanada))) '(shopify aircanada)))
+(assert (equal (reached 'google '( (google shopify) (shopify amazon) (amazon google) ) ) '(shopify amazon)))
+(assert (equal (reached 'google '( (google shopify) (shopify amazon) (amazon indigo))) '(shopify amazon indigo)))
+(assert (equal (reached 'google '( (google shopify) (google aircanada) (amazon aircanada) (aircanada delta) (google google) )) '(shopify aircanada delta)))
+
+(assert (equal (rank '(google shopify aircanada amazon) '((google shopify) (google aircanada) (amazon aircanada))) '(AIRCANADA SHOPIFY GOOGLE AMAZON)))
+(assert (equal (rank '(google shopify amazon) '((google shopify) (shopify amazon) (amazon google))) '(GOOGLE SHOPIFY AMAZON)))
+(assert (equal (rank '(google shopify amazon indigo) '((google shopify) (shopify amazon) (amazon indigo))) '(SHOPIFY AMAZON INDIGO GOOGLE)))
+(assert (equal (rank '(google shopify aircanada amazon delta) '((google shopify) (google aircanada) (amazon aircanada) (aircanada delta) (google google))) '(AIRCANADA GOOGLE SHOPIFY DELTA AMAZON)))
 (terpri)
     
     
