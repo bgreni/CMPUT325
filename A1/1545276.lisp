@@ -1,4 +1,12 @@
-#| QUESTION 1
+"
+Assignment 1
+Brian Grenier
+bgrenier
+1545276
+"
+
+
+" QUESTION 1
 
 This function takes an atom X and a list Y and returns
 T if Y contains X, and NIL otherwise
@@ -9,7 +17,7 @@ finally it calls xmember recursively, removing the first item from Y
 in order to check the next item in the list.
 Once the list is empty, it will become NIL, so if a match has not been found yet,
 NIL will be returned
-|#
+"
 (defun xmember (X Y)
     (cond
         ((atom Y)
@@ -23,7 +31,7 @@ NIL will be returned
     )
 )
 
-#| QUESTION 2
+" QUESTION 2
 This function unests any list inside of a list x
 
 Test case:
@@ -32,7 +40,7 @@ Test case:
 If checks if the list x is empty, and then return NIL,
 then if the first item is an atom, that atom is cons'd with the flattened version of the rest of the list through recursion
 otherwise, the flattened version of the first in the list is appended with the flattened version of the rest of the list
-|#
+"
 (defun flatten (x)
     (cond 
         ((null x) 
@@ -44,13 +52,13 @@ otherwise, the flattened version of the first in the list is appended with the f
     )
 )
 
-#| QUESTION 3
+"QUESTION 3
 Removes duplicate values from a list
 
 checks if list x is empty and returns NIL
 then checks if the first item in the list is a member of the rest of the list, then makes a recursive call exlcuding the rest of the list
 otherwise combines the first item in the list, with the de-duplicated version of the rest of the list using recursion
-|#
+"
 (defun remove-duplicate (x)
     (cond 
         ((null x) 
@@ -62,7 +70,7 @@ otherwise combines the first item in the list, with the de-duplicated version of
     )
 )
 
-#| QUESTION 4
+"QUESTION 4
 Combines two lists by choosing elements from L1 and L2 alternatingly. If one of the lists are emtpy, then the rest of the
 longer list is added
 
@@ -70,7 +78,7 @@ Checks if L1 is null, then returns the rest of L2
 Checks if L2 is null, then returns the rest of L1
 otherwise combines the first element of L1 with the rest of the mixed list using recursion, swapping the position of the arguments
 L1 and L2, so that on the next recusive call, the first item in L2 will be choosen
-|#
+"
 (defun mix (L1 L2)
     (cond 
         ((null L1) 
@@ -82,9 +90,9 @@ L1 and L2, so that on the next recusive call, the first item in L2 will be choos
     )
 )
 
-#| QUESTION 5
+"QUESTION 5
 Generates the powerset of a given list L
-|#
+"
 (defun allsubsets (L)
 "
 Checks if L is null, then returns empty list
@@ -116,9 +124,9 @@ with the powerset of x and the remaining elements in y
     )
 )
 
-#| QUESTION 6
+"QUESTION 6
 Contains definitions for both the reached and ranked functions
-|#
+"
 
 ; START OF REACHED FUNCTIONS
 (defun reached (x L)
