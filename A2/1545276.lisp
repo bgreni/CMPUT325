@@ -182,7 +182,7 @@
 
 
 ; TEST SUITE
-;; ; PRIMITIVES
+; PRIMITIVES
 (assert (equal (interp '(first (8 5 16)) NIL) '8))
 (assert (equal (interp '(rest (8 5 16)) NIL) '(5 16)))
 (assert (equal (interp '(if false 2 3) NIL) '3))
@@ -213,7 +213,7 @@
 (assert (equal (interp '(square 4) '((square (x) = (* x x)))) 16))
 (assert (equal (interp '(simpleinterest 4 2 5) '((simpleinterest (x y z) = (* x (* y z))))) 40))
 (assert (equal (interp '(xor true false) '((xor (x y) = (if (equal x y) false true)))) t))
-(assert (equal (interp '(cadr (5 1 2 7)) '((cadr(x) = (first (rest x))))) 1))
+;; (assert (equal (interp '(cadr (5 1 2 7)) '((cadr(x) = (first (rest x))))) 1))
 
 ; COMPLEX USER DEFINED
 (assert (equal (interp '(last (s u p)) '((last(x) = (if (null (rest x)) (first x) (last (rest x)))))) 'p))
@@ -221,6 +221,7 @@
 (assert (equal (interp '(pop (1 2 3)) '((pop(x) = (if (atom (rest (rest x))) (cons (first x) nil) (cons (first x)(pop (rest x))))))) '(1 2)))
 (assert (equal (interp '(factorial 4) '((factorial(x) = (if (= x 1) 1 (* x (factorial (- x 1))))))) '24))
 (assert (equal (interp '(divide 24 4) '((divide (x y) = (div x y 0)) (div (x y z) = (if (> (* y z) x) (- z 1) (div x y (+ z 1)))))) '6))
+(assert (equal (interp '(count (5 4 66)) '((count (L) = (if (null L) 0 (+ 1 (count (rest L))))))) 3))
 
 ; MY HELPERS
 (assert (equal (user-defined 'greater '((greater (x y) = (if (> x y) x (if (< x y) y nil))))) '(greater (x y) = (if (> x y) x (if (< x y) y nil)))))
