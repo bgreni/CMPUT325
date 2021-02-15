@@ -100,7 +100,6 @@
             ; negates the result of the arg
             (not (interp (first arg) P)))
 
-
           (T
             ; handle user defined function
             (let ((def (user-defined f P)))
@@ -108,13 +107,16 @@
                 ; if def is null then this is not a function but a list
                 ((null def) 
                   E)
-                (T 
-                  ; make pairs of arg symbols and their values for this function call
-                  (let ((pairs (make-pairs (second def) arg)) (bod (get-body def)))
-                    ; replace all instances of arg variable with their values
-                    (let ((replaced (reps pairs bod)))
-                      ; evaluate the function body
-                      (interp replaced P))
+                (T
+                  ; evaluate the args of the function
+                  (let ((new-args (eval-args arg P))) 
+                    ; make pairs of arg symbols and their values for this function call
+                    (let ((pairs (make-pairs (second def) new-args)) (bod (get-body def)))
+                      ; replace all instances of arg variable with their values
+                      (let ((replaced (reps pairs bod)))
+                        ; evaluate the function body
+                        (interp replaced P))
+                    )
                   )
                 )
               )
@@ -123,6 +125,22 @@
         )
       )
     )
+  )
+)
+
+(defun eval-args (args P)
+  "
+  Interpret a list of expressions
+  Used to implement applicative order of reduction when evaluating user defined functions
+  Carries the program definition in order to pass it to interp
+
+  e.g: (eval-args '((+ 1 2) (* 2 3)) NIL) -> '(2 6)
+  "
+  (cond
+    ((null args)
+      NIL)
+    (T 
+      (cons (interp (first args) P) (eval-args (rest args) P)))
   )
 )
 
@@ -260,6 +278,9 @@
 (assert (equal (interp '(divide 24 4) '((divide (x y) = (div x y 0)) (div (x y z) = (if (> (* y z) x) (- z 1) (div x y (+ z 1)))))) '6))
 (assert (equal (interp '(count (5 4 66)) '((count (L) = (if (null L) 0 (+ 1 (count (rest L))))))) 3))
 
+;  DO TO APPLICATIVE ORDER OF REDUCTION THIS IS SUPPOSED TO CAUSE STACK OVERFLOW
+; (fl-interp '(f 0 (g 1)) '((g (x) = (+ x (g (+ x 1)))) (f (x y) = (if (eq x 0) 0 Y))))
+
 ; MY HELPERS
 (assert (equal (user-defined 'greater '((greater (x y) = (if (> x y) x (if (< x y) y nil))))) '(greater (x y) = (if (> x y) x (if (< x y) y nil)))))
 (assert (equal (user-defined 'greater '((nothing (x y) = (if (> x y) x (if (< x y) y nil))))) NIL))
@@ -269,4 +290,5 @@
 (assert (equal (reps '((x . 1) (y . 2) (z . 3)) '(x x z y)) '(1 1 3 2)))
 (assert (equal (reps '((x . 1) (y . 2) (z . 3)) '(x x z (x y))) '(1 1 3 (1 2))))
 (assert (equal (make-pairs '(x y z) '(1 2 3)) '((x . 1) (y . 2) (z . 3))))
+(assert (equal (eval-args '((+ 1 2) (* 2 3)) NIL) '(3 6)))
 (terpri)
