@@ -222,7 +222,7 @@
 ; PRIMITIVES
 (assert (equal (interp '(first (8 5 16)) NIL) '8))
 (assert (equal (interp '(rest (8 5 16)) NIL) '(5 16)))
-(assert (equal (interp '(if false 2 3) NIL) '3))
+(assert (equal (interp '(if NIL 2 3) NIL) '3))
 (assert (equal (interp '(null ()) NIL) t))
 (assert (equal (interp '(atom (3)) NIL) NIL))
 (assert (equal (interp '(eq x x) nil) t))
@@ -234,9 +234,9 @@
 (assert (equal (interp '(> 2 3) nil) nil))
 (assert (equal (interp '(< 1 131) nil) t))
 (assert (equal (interp '(= 88 88) nil) t))
-(assert (equal (interp '(and false true) nil) nil))
-(assert (equal (interp '(or true false) nil) t))
-(assert (equal (interp '(not true) nil) nil))
+(assert (equal (interp '(and NIL t) nil) nil))
+(assert (equal (interp '(or t NIL) nil) t))
+(assert (equal (interp '(not t) nil) nil))
 (assert (equal (interp '(equal (3 4 1) (3 4 1)) nil) t))
 
 ; Compound Primitives
