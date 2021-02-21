@@ -102,7 +102,7 @@
 
           (T
             ; handle user defined function
-            (let ((def (user-defined f P)))
+            (let ((def (user-defined f (len arg) P)))
               (cond
                 ; if def is null then this is not a function but a list
                 ((null def) 
@@ -215,9 +215,9 @@
 )
 
 
-(defun user-defined (f P)
+(defun user-defined (f argc P)
   "
-  Search a list of user defined functions P for a function definition matching the name f
+  Search a list of user defined functions P for a function definition matching the name and arg count of f
   and return the matching function definition, or NIL if non are found
 
   e.g: (user-defined 'sum '((sum (x y) = (+ x y)) (prod (x y) = (* x y)))) -> (sum (x y) = (+ x y))
@@ -226,12 +226,23 @@
     ; we have exhausted available defs, return NIL
     ((null P) NIL)
     ; The function name matches the one we are looking for
-    ((equal f (caar P)) (first P))
-    (T (user-defined f (rest P)))
+    ((and (equal f (caar P)) (equal argc (len (second (first P))))) (first P))
+    (T (user-defined f argc (rest P)))
   )
-
-
 )
+
+(defun len (L)
+  "
+  Returns the length of a list L
+  "
+  (if (null L) 
+      0
+      (+ 1 (len (cdr L)))
+  )
+)
+
+
+
 
 
 
@@ -277,13 +288,14 @@
 (assert (equal (interp '(factorial 4) '((factorial(x) = (if (= x 1) 1 (* x (factorial (- x 1))))))) '24))
 (assert (equal (interp '(divide 24 4) '((divide (x y) = (div x y 0)) (div (x y z) = (if (> (* y z) x) (- z 1) (div x y (+ z 1)))))) '6))
 (assert (equal (interp '(count (5 4 66)) '((count (L) = (if (null L) 0 (+ 1 (count (rest L))))))) 3))
+(assert (equal (fl-interp '(f (f 2 3)) '((f (x) = (+ x 1))  (f (x y) = (+ x y)))) 6))
 
 ;  DO TO APPLICATIVE ORDER OF REDUCTION THIS IS SUPPOSED TO CAUSE STACK OVERFLOW
 ; (fl-interp '(f 0 (g 1)) '((g (x) = (+ x (g (+ x 1)))) (f (x y) = (if (eq x 0) 0 Y))))
 
 ; MY HELPERS
-(assert (equal (user-defined 'greater '((greater (x y) = (if (> x y) x (if (< x y) y nil))))) '(greater (x y) = (if (> x y) x (if (< x y) y nil)))))
-(assert (equal (user-defined 'greater '((nothing (x y) = (if (> x y) x (if (< x y) y nil))))) NIL))
+(assert (equal (user-defined 'greater 2 '((greater (x y) = (if (> x y) x (if (< x y) y nil))))) '(greater (x y) = (if (> x y) x (if (< x y) y nil)))))
+(assert (equal (user-defined 'greater 2 '((nothing (x y) = (if (> x y) x (if (< x y) y nil))))) NIL))
 (assert (equal (get-body '(greater (x y) = (if (> x y) x (if (< x y) y nil)))) '(if (> x y) x (if (< x y) y nil))))
 (assert (equal (rep 'x 1 '(x y z x)) '(1 y z 1)))
 (assert (equal (reps '((x . 1)) '(x x z y)) '(1 1 z y)))
