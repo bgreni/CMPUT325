@@ -15,6 +15,7 @@
       (cond
         ((equal E 'true) T)
         ((equal E 'false) NIL)
+        ((null E) NIL)
         (T E)
       )
     )
