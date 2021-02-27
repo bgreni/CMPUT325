@@ -1,3 +1,12 @@
+"
+Brian Grenier
+bgrenier
+1545276
+CMPUT 325 A2
+"
+
+
+
 (defun fl-interp (E P)
 ; just cause interp is shorter
   (interp E P)
@@ -250,58 +259,58 @@
 
 ; TEST SUITE
 ; PRIMITIVES
-(assert (equal (interp '(first (8 5 16)) NIL) '8))
-(assert (equal (interp '(rest (8 5 16)) NIL) '(5 16)))
-(assert (equal (interp '(if NIL 2 3) NIL) '3))
-(assert (equal (interp '(null ()) NIL) t))
-(assert (equal (interp '(atom (3)) NIL) NIL))
-(assert (equal (interp '(eq x x) nil) t))
-(assert (equal (interp '(cons 6 3) nil) '(6 . 3)))
-(assert (equal (interp '(number 354) nil) t))
-(assert (equal (interp '(+ 10 5) nil) 15))
-(assert (equal (interp '(- 12 8) nil) 4))
-(assert (equal (interp '(* 5 9) nil) 45))
-(assert (equal (interp '(> 2 3) nil) nil))
-(assert (equal (interp '(< 1 131) nil) t))
-(assert (equal (interp '(= 88 88) nil) t))
-(assert (equal (interp '(and NIL t) nil) nil))
-(assert (equal (interp '(or t NIL) nil) t))
-(assert (equal (interp '(not t) nil) nil))
-(assert (equal (interp '(equal (3 4 1) (3 4 1)) nil) t))
+;; (assert (equal (interp '(first (8 5 16)) NIL) '8))
+;; (assert (equal (interp '(rest (8 5 16)) NIL) '(5 16)))
+;; (assert (equal (interp '(if NIL 2 3) NIL) '3))
+;; (assert (equal (interp '(null ()) NIL) t))
+;; (assert (equal (interp '(atom (3)) NIL) NIL))
+;; (assert (equal (interp '(eq x x) nil) t))
+;; (assert (equal (interp '(cons 6 3) nil) '(6 . 3)))
+;; (assert (equal (interp '(number 354) nil) t))
+;; (assert (equal (interp '(+ 10 5) nil) 15))
+;; (assert (equal (interp '(- 12 8) nil) 4))
+;; (assert (equal (interp '(* 5 9) nil) 45))
+;; (assert (equal (interp '(> 2 3) nil) nil))
+;; (assert (equal (interp '(< 1 131) nil) t))
+;; (assert (equal (interp '(= 88 88) nil) t))
+;; (assert (equal (interp '(and NIL t) nil) nil))
+;; (assert (equal (interp '(or t NIL) nil) t))
+;; (assert (equal (interp '(not t) nil) nil))
+;; (assert (equal (interp '(equal (3 4 1) (3 4 1)) nil) t))
 
-; Compound Primitives
-(assert (equal (interp '(+ (* 2 2) (* 2 (- (+ 2 (+ 1 (- 7 4))) 2))) nil) 12))
-(assert (equal (interp '(and (> (+ 3 2) (- 4 2)) (or (< 3 (* 2 2))) (not (= 3 2))) nil) t))
-(assert (equal (interp '(or (= 5 (- 4 2)) (and (not (> 2 2)) (< 3 2))) nil) nil))
-(assert (equal (interp '(if (not (null (first (a c e)))) (if (number (first (a c e))) (first (a c e)) (cons (a c e) d)) (rest (a c e))) nil) '((a c e) . d)))
+;; ; Compound Primitives
+;; (assert (equal (interp '(+ (* 2 2) (* 2 (- (+ 2 (+ 1 (- 7 4))) 2))) nil) 12))
+;; (assert (equal (interp '(and (> (+ 3 2) (- 4 2)) (or (< 3 (* 2 2))) (not (= 3 2))) nil) t))
+;; (assert (equal (interp '(or (= 5 (- 4 2)) (and (not (> 2 2)) (< 3 2))) nil) nil))
+;; (assert (equal (interp '(if (not (null (first (a c e)))) (if (number (first (a c e))) (first (a c e)) (cons (a c e) d)) (rest (a c e))) nil) '((a c e) . d)))
 
-; USER DEFINED
-(assert (equal (interp '(greater 3 5) '((greater (x y) = (if (> x y) x (if (< x y) y nil))))) 5))
-(assert (equal (interp '(square 4) '((square (x) = (* x x)))) 16))
-(assert (equal (interp '(simpleinterest 4 2 5) '((simpleinterest (x y z) = (* x (* y z))))) 40))
-(assert (equal (interp '(xor true false) '((xor (x y) = (if (equal x y) false true)))) t))
-(assert (equal (interp '(cadr (5 1 2 7)) '((cadr(x) = (first (rest x))))) 1))
+;; ; USER DEFINED
+;; (assert (equal (interp '(greater 3 5) '((greater (x y) = (if (> x y) x (if (< x y) y nil))))) 5))
+;; (assert (equal (interp '(square 4) '((square (x) = (* x x)))) 16))
+;; (assert (equal (interp '(simpleinterest 4 2 5) '((simpleinterest (x y z) = (* x (* y z))))) 40))
+;; (assert (equal (interp '(xor true false) '((xor (x y) = (if (equal x y) false true)))) t))
+;; (assert (equal (interp '(cadr (5 1 2 7)) '((cadr(x) = (first (rest x))))) 1))
 
-; COMPLEX USER DEFINED
-(assert (equal (interp '(last (s u p)) '((last(x) = (if (null (rest x)) (first x) (last (rest x)))))) 'p))
-(assert (equal (interp '(push (1 2 3) 4) '((push (x y) = (if (null x) (cons y nil) (cons (first x) (push (rest x) y)))))) '(1 2 3 4)))
-(assert (equal (interp '(pop (1 2 3)) '((pop(x) = (if (atom (rest (rest x))) (cons (first x) nil) (cons (first x)(pop (rest x))))))) '(1 2)))
-(assert (equal (interp '(factorial 4) '((factorial(x) = (if (= x 1) 1 (* x (factorial (- x 1))))))) '24))
-(assert (equal (interp '(divide 24 4) '((divide (x y) = (div x y 0)) (div (x y z) = (if (> (* y z) x) (- z 1) (div x y (+ z 1)))))) '6))
-(assert (equal (interp '(count (5 4 66)) '((count (L) = (if (null L) 0 (+ 1 (count (rest L))))))) 3))
-(assert (equal (fl-interp '(f (f 2 3)) '((f (x) = (+ x 1))  (f (x y) = (+ x y)))) 6))
+;; ; COMPLEX USER DEFINED
+;; (assert (equal (interp '(last (s u p)) '((last(x) = (if (null (rest x)) (first x) (last (rest x)))))) 'p))
+;; (assert (equal (interp '(push (1 2 3) 4) '((push (x y) = (if (null x) (cons y nil) (cons (first x) (push (rest x) y)))))) '(1 2 3 4)))
+;; (assert (equal (interp '(pop (1 2 3)) '((pop(x) = (if (atom (rest (rest x))) (cons (first x) nil) (cons (first x)(pop (rest x))))))) '(1 2)))
+;; (assert (equal (interp '(factorial 4) '((factorial(x) = (if (= x 1) 1 (* x (factorial (- x 1))))))) '24))
+;; (assert (equal (interp '(divide 24 4) '((divide (x y) = (div x y 0)) (div (x y z) = (if (> (* y z) x) (- z 1) (div x y (+ z 1)))))) '6))
+;; (assert (equal (interp '(count (5 4 66)) '((count (L) = (if (null L) 0 (+ 1 (count (rest L))))))) 3))
+;; (assert (equal (fl-interp '(f (f 2 3)) '((f (x) = (+ x 1))  (f (x y) = (+ x y)))) 6))
 
-;  DO TO APPLICATIVE ORDER OF REDUCTION THIS IS SUPPOSED TO CAUSE STACK OVERFLOW
-; (fl-interp '(f 0 (g 1)) '((g (x) = (+ x (g (+ x 1)))) (f (x y) = (if (eq x 0) 0 Y))))
+;; ;  DO TO APPLICATIVE ORDER OF REDUCTION THIS IS SUPPOSED TO CAUSE STACK OVERFLOW
+;; ; (fl-interp '(f 0 (g 1)) '((g (x) = (+ x (g (+ x 1)))) (f (x y) = (if (eq x 0) 0 Y))))
 
-; MY HELPERS
-(assert (equal (user-defined 'greater 2 '((greater (x y) = (if (> x y) x (if (< x y) y nil))))) '(greater (x y) = (if (> x y) x (if (< x y) y nil)))))
-(assert (equal (user-defined 'greater 2 '((nothing (x y) = (if (> x y) x (if (< x y) y nil))))) NIL))
-(assert (equal (get-body '(greater (x y) = (if (> x y) x (if (< x y) y nil)))) '(if (> x y) x (if (< x y) y nil))))
-(assert (equal (rep 'x 1 '(x y z x)) '(1 y z 1)))
-(assert (equal (reps '((x . 1)) '(x x z y)) '(1 1 z y)))
-(assert (equal (reps '((x . 1) (y . 2) (z . 3)) '(x x z y)) '(1 1 3 2)))
-(assert (equal (reps '((x . 1) (y . 2) (z . 3)) '(x x z (x y))) '(1 1 3 (1 2))))
-(assert (equal (make-pairs '(x y z) '(1 2 3)) '((x . 1) (y . 2) (z . 3))))
-(assert (equal (eval-args '((+ 1 2) (* 2 3)) NIL) '(3 6)))
-(terpri)
+;; ; MY HELPERS
+;; (assert (equal (user-defined 'greater 2 '((greater (x y) = (if (> x y) x (if (< x y) y nil))))) '(greater (x y) = (if (> x y) x (if (< x y) y nil)))))
+;; (assert (equal (user-defined 'greater 2 '((nothing (x y) = (if (> x y) x (if (< x y) y nil))))) NIL))
+;; (assert (equal (get-body '(greater (x y) = (if (> x y) x (if (< x y) y nil)))) '(if (> x y) x (if (< x y) y nil))))
+;; (assert (equal (rep 'x 1 '(x y z x)) '(1 y z 1)))
+;; (assert (equal (reps '((x . 1)) '(x x z y)) '(1 1 z y)))
+;; (assert (equal (reps '((x . 1) (y . 2) (z . 3)) '(x x z y)) '(1 1 3 2)))
+;; (assert (equal (reps '((x . 1) (y . 2) (z . 3)) '(x x z (x y))) '(1 1 3 (1 2))))
+;; (assert (equal (make-pairs '(x y z) '(1 2 3)) '((x . 1) (y . 2) (z . 3))))
+;; (assert (equal (eval-args '((+ 1 2) (* 2 3)) NIL) '(3 6)))
+;; (terpri)
