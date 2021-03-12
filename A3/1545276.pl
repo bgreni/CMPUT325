@@ -133,26 +133,26 @@ Question 6
 
 allConnected(L)
 --------------------------------------------------------- */
-% node(_).
-% edge(_,_).
-% clique(L) :-
-%     findall(X, node(X), Nodes),
-%     subset(Nodes,L).
-%     allConnected(L).
+node(_).
+edge(_,_).
+clique(L) :-
+    findall(X, node(X), Nodes),
+    subset(Nodes,L).
+    allConnected(L).
 
-% subset([], _).
+subset([], _).
 
-% subset([X|Xs], Set) :-
-%     append(_, [X|Set1], Set),
-%     subset(Xs, Set1).
+subset([X|Xs], Set) :-
+    append(_, [X|Set1], Set),
+    subset(Xs, Set1).
 
-% allConnected(L) :-
-%     connects(S, L).
+allConnected(L) :-
+    connects(S, L).
 
-% connects([]).
+connects([], []).
 
-% connects([X|S]) :-
-%     forall(member(Y,L), (edge(X,Y); edge(Y,X))),
+connects([X|S], L) :-
+    forall(member(Y,L), (edge(X,Y); edge(Y,X))),
 
 
 
