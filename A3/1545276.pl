@@ -192,8 +192,9 @@ sub([],_,[]).
 
 % case where X exists in S, and is replaced
 % with its value Y
-sub([X|R],[[X,Y]|S],[Y|L1]) :-
+sub([X|R],S,[Y|L1]) :-
     atomic(X),
+    findx(X, S, Y),
     !,
     sub(R,[[X,Y]|S], L1).
 
@@ -209,6 +210,14 @@ sub([X|R],S,[R2|L1]) :-
     sub(X,S,R2),
     !,
     sub(R,S,L1).
+
+% Find if X exists in a set of pairs as the first element
+% of some pair, if true, return the paired value Y.
+findx(_, [], []) :- false, !.
+findx(X, [[X,Y]|_], Y) :- !.
+findx(X, [_|R], Res) :-
+    findx(X, R, Res).
+
 
 /* ---------------------------------------------------------
 Question 6
@@ -380,6 +389,12 @@ test(sub2, true(L == [2,2,d,e,2])) :-
 
 test(sub1, true(L == [2,[2,d],[e,2]])) :-
     sub([a,[a,d],[e,a]],[[a,2]],L).
+
+test(sub3, true(L == [2,[2,3],[e,2]])) :-
+    sub([a,[a,d],[e,a]],[[a,2],[d,3]],L).
+
+test(sub3, true(L == [2,[2,3],[4,2]])) :-
+    sub([a,[a,d],[e,a]],[[a,2],[d,3], [e,4]],L).
 
 test(clique1, all(L == [[],[a], [a,b], [a,b,c], [a,c], [b], [b,c], [c]])) :-
     clique(L).
