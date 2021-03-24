@@ -244,16 +244,19 @@ returned
 --------------------------------------------------------- */
 % a node has an edge to itself so that
 % a single node is considered a clique
+% My personal test works with the predicates defined like this so I hope
+% this works for however it is tested
+:- dynamic([edge/2, node/1]).
 node(X) :- edge(X,X).
 
 % MY TEST DATA UNCOMMENT IF YOU WANT
-node(a).
-node(b).
-node(c).
+% node(a).
+% node(b).
+% node(c).
 
-edge(a,b).
-edge(b,c).
-edge(c,a).
+% edge(a,b).
+% edge(b,c).
+% edge(c,a).
 
 
 clique(L) :-
@@ -275,7 +278,7 @@ connects(X, L) :-
     forall(memb(Y,L), (edge(X,Y); edge(Y,X))).
 
 /* ---------------------------------------------------------
-Question Y
+Question 7
 
 convert(+Term,-Result)
 
@@ -334,87 +337,87 @@ find_matching([X|T], Left, [X|R]) :-
 
 % MY TEST SCRIPTS
 
-:- initialization main.
+% :- initialization main.
 
-main :-
-    run_tests(a1),
-    halt.
+% main :-
+%     run_tests(a1),
+%     halt.
 
 
-:- begin_tests(a1).
+% :- begin_tests(a1).
 
-% HELPER TESTS
-test(docount1, true(C == 2)) :-
-    doCount(c, [a,b,e,c,c,b], C).
+% % HELPER TESTS
+% test(docount1, true(C == 2)) :-
+%     doCount(c, [a,b,e,c,c,b], C).
 
-test(qsort1, true(R == [[a,2],[v,3],[n,5],[b,8]])) :-
-    quick_sort([[b,8],[a,2],[n,5],[v,3]], R).
+% test(qsort1, true(R == [[a,2],[v,3],[n,5],[b,8]])) :-
+%     quick_sort([[b,8],[a,2],[n,5],[v,3]], R).
 
-test(memb1, true(X)) :-
-    (memb(a, [a,b,c]) -> X = true; X = false).
+% test(memb1, true(X)) :-
+%     (memb(a, [a,b,c]) -> X = true; X = false).
 
-test(memb2, true(\+ X)) :-
-    (memb(j, [a,b,c]) -> X = true; X = false).
+% test(memb2, true(\+ X)) :-
+%     (memb(j, [a,b,c]) -> X = true; X = false).
 
-test(setify1, true(S == [b,a,c])) :-
-    setify([a,a,b,a,c,c],S).
+% test(setify1, true(S == [b,a,c])) :-
+%     setify([a,a,b,a,c,c],S).
 
-test(flatty, true(R == [3,4,5,2,1,7,3])) :-
-    flatty([3,4,[5,2],[1,7,3]],R).
+% test(flatty, true(R == [3,4,5,2,1,7,3])) :-
+%     flatty([3,4,[5,2],[1,7,3]],R).
 
-% MAIN FUNC TESTS
-test(setinter1, true(S == [a,b,c,e])) :-
-    setIntersect([a,b,c,d,e,g],[b,a,c,e,f,q], S).
+% % MAIN FUNC TESTS
+% test(setinter1, true(S == [a,b,c,e])) :-
+%     setIntersect([a,b,c,d,e,g],[b,a,c,e,f,q], S).
 
-test(swap1, true(W == [1,a,2,b])) :-
-    swap([a,1,b,2], W).
+% test(swap1, true(W == [1,a,2,b])) :-
+%     swap([a,1,b,2], W).
 
-test(swap2, true(W == [1,a,b])) :-
-    swap([a,1,b], W).
+% test(swap2, true(W == [1,a,b])) :-
+%     swap([a,1,b], W).
 
-test(filter1, true(W2 == [4,5,7])) :-
-    filter([3,4,[5,2],[1,7,3]],greaterThan,3,W2).
+% test(filter1, true(W2 == [4,5,7])) :-
+%     filter([3,4,[5,2],[1,7,3]],greaterThan,3,W2).
 
-test(filter1, true(W2 == [3,3])) :-
-    filter([3,4,[5,2],[1,7,3]],equal,3,W2).
+% test(filter1, true(W2 == [3,3])) :-
+%     filter([3,4,[5,2],[1,7,3]],equal,3,W2).
 
-test(filter1, true(W2 == [2,1])) :-
-    filter([3,4,[5,2],[1,7,3]],lessThan,3,W2).
+% test(filter1, true(W2 == [2,1])) :-
+%     filter([3,4,[5,2],[1,7,3]],lessThan,3,W2).
 
-test(countAll1, true(N == [[k ,1],[e,1],[c,2],[b, 2]])) :-
-    countAll([k,b,e,c,c,b],N).
+% test(countAll1, true(N == [[k ,1],[e,1],[c,2],[b, 2]])) :-
+%     countAll([k,b,e,c,c,b],N).
 
-test(sub2, true(L == [2,2,d,e,2])) :-
-    sub([a,a,d,e,a],[[a,2]],L).
+% test(sub2, true(L == [2,2,d,e,2])) :-
+%     sub([a,a,d,e,a],[[a,2]],L).
 
-test(sub1, true(L == [2,[2,d],[e,2]])) :-
-    sub([a,[a,d],[e,a]],[[a,2]],L).
+% test(sub1, true(L == [2,[2,d],[e,2]])) :-
+%     sub([a,[a,d],[e,a]],[[a,2]],L).
 
-test(sub3, true(L == [2,[2,3],[e,2]])) :-
-    sub([a,[a,d],[e,a]],[[a,2],[d,3]],L).
+% test(sub3, true(L == [2,[2,3],[e,2]])) :-
+%     sub([a,[a,d],[e,a]],[[a,2],[d,3]],L).
 
-test(sub3, true(L == [2,[2,3],[4,2]])) :-
-    sub([a,[a,d],[e,a]],[[a,2],[d,3], [e,4]],L).
+% test(sub3, true(L == [2,[2,3],[4,2]])) :-
+%     sub([a,[a,d],[e,a]],[[a,2],[d,3], [e,4]],L).
 
-test(clique1, all(L == [[],[a], [a,b], [a,b,c], [a,c], [b], [b,c], [c]])) :-
-    clique(L).
+% test(clique1, all(L == [[],[a], [a,b], [a,b,c], [a,c], [b], [b,c], [c]])) :-
+%     clique(L).
 
-test(convert1, true(R == [c,c])) :-
-    convert([e,e,a,e,b,e],R).
+% test(convert1, true(R == [c,c])) :-
+%     convert([e,e,a,e,b,e],R).
 
-test(convert2, true(R == [q,c,c])) :-
-    convert([e,q,a,b,e,e],R).
+% test(convert2, true(R == [q,c,c])) :-
+%     convert([e,q,a,b,e,e],R).
 
-test(convert3, true(R == [c])) :-
-    convert([e,a,e,e],R).
+% test(convert3, true(R == [c])) :-
+%     convert([e,a,e,e],R).
 
-test(convert4, true(R == [q,a,e,b,q,c])) :-
-    convert([e,q,a,e,b,q,e,a,e],R).
+% test(convert4, true(R == [q,a,e,b,q,c])) :-
+%     convert([e,q,a,e,b,q,e,a,e],R).
 
-test(convert5, true(R == [c,q,e,l,q,c,q,c])) :-
-    convert([a,q,e,l,q,r,e,q,b,e],R).
+% test(convert5, true(R == [c,q,e,l,q,c,q,c])) :-
+%     convert([a,q,e,l,q,r,e,q,b,e],R).
 
-test(convert6, true(R == [q,e,q,c,q,e,l,q,c] )) :-
-    convert([q,e,q,b,q,e,l,q,a,e],R).
+% test(convert6, true(R == [q,e,q,c,q,e,l,q,c] )) :-
+%     convert([q,e,q,b,q,e,l,q,a,e],R).
 
-:- end_tests(a1).
+% :- end_tests(a1).
