@@ -85,32 +85,42 @@ assign(W1, W2) :-
     findall([X,Y,Z], reviewer(X,Y,Z), Reviewers),
     findall([I,D,A,E], paper(I,D,A,E), Papers),
     % RevC = {},
-    % forall(reviewer(X,Y,Z), )
     workLoadAtMost(K),
     % writeln(Reviewers),
     % writeln(Papers)
-    forall(member(P, Papers), findrev(P, W1, W2, Reviewer)).
+    % do_papers(Papers, Reviewers, W1, W2),
+    % writeln(W1),
+    % length(Reviewers, L),
+    % W1 in 1..L,
+    % W2 in 1..L,
+    !,
+    reverse(Reviewers, Rev),
+    append(Reviewers, Reviewers, Rev1),
+    append(Rev, Rev, Rev2),
+    perm(Rev1, W1),
+    perm(Rev2, W2),
+    constrain(W1,W2, Ps),
+    % writeln(W1),
+    % writeln(W2),
+    !.
+    % label(W1),
+    % label(W2).
 
+constrain([], [], []).
 
-findrev(P, [R1|W1], [R2|W2], Reviewers) :-
-    getrev1(P, R1, Reviewers),
-    getrev2(P, R2, R1, Reviewers).
+constrain([[R1,T11, T12]|Rest1], [[R2,T21, T22]|Rest2], [[ID,A1,A2,T]|RestP]) :-
+    R1 \= R2,
+    R1 \= A1, R1 \= A2,
+    R2 \= A1, R2 \= A2,
+    T11 = T ; T12 = T,
+    T21 = T ; T22 = T,
+    constrain(Rest1, Rest2, RestP).
 
+takeout(X,[X|R],R).  
+takeout(X,[F |R],[F|S]) :- takeout(X,R,S).
 
-getrev1([ID,A1,A2,T], R1, Reviewers) :-
-    all_distinct(Reviewers),
-    [R1,R1T1,R1T2]
-    R1 #\= A1, R1 #\= A2,
-    RT1 #= T ; RT2 #= T.
-
-
-
-getrev2([ID,A1,A2,T], R2, R1, Reviewers) :-
-    [R2,RT1,RT2] in Reviewers,
-    R1 #\= A1, R1 #\= A2,
-    RT1 #= T ; RT2 #= T,
-    R1 #\= R2.
-
+perm([X|Y],Z) :- perm(Y,W), takeout(X,Z,W).  
+perm([],[]).
     
 
 
