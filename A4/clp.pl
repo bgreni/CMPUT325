@@ -48,14 +48,25 @@ Question 3
 --------------------------------------------------------- */
 
 subsetsum(Set, G) :-
-    subs(Sub, Set),
-    sum(Sub, #=, G),
-    writeln(Sub).
+    length(Set, L),
+    length(Vars, L),
+    !,
+    Vars ins {0,1},
+    scalar_product(Set, Vars, #=, G),
+    label(Vars),
+    getsol(Set, Vars, Res),
+    writeln(Res).
 
-subs([], _).
-subs([X|Xs], Set) :-
-  append(_, [X|Set1], Set),
-  subs(Xs, Set1).
+getsol([],[],[]).
+getsol([N|R1], [S|R2], [N|Res]) :-
+    S =\= 0,
+    getsol(R1,R2,Res).
+getsol([N|R1], [S|R2], Res) :-
+    getsol(R1,R2,Res).
+% subs([], _).
+% subs([X|Xs], Set) :-
+%   append(_, [X|Set1], Set),
+%   subs(Xs, Set1).
 
 
 
@@ -84,36 +95,32 @@ workLoadAtMost(2).
 assign(W1, W2) :-
     findall([X,Y,Z], reviewer(X,Y,Z), Reviewers),
     findall([I,D,A,E], paper(I,D,A,E), Papers),
-    % RevC = {},
     workLoadAtMost(K),
-    % writeln(Reviewers),
-    % writeln(Papers)
-    % do_papers(Papers, Reviewers, W1, W2),
-    % writeln(W1),
-    % length(Reviewers, L),
-    % W1 in 1..L,
-    % W2 in 1..L,
+    length(Reviewers, L),
     !,
     reverse(Reviewers, Rev),
-    append(Reviewers, Reviewers, Rev1),
-    append(Rev, Rev, Rev2),
-    perm(Rev1, W1),
-    perm(Rev2, W2),
-    constrain(W1,W2, Ps),
+    perm(Reviewers, R1),
+    perm(Rev, R2),
+    constrain(R1,R2, Ps),
+    maplist([X]>>arg(1,X), R1, W1),
+    maplist([X]>>arg(1,X), R2, W2),
     % writeln(W1),
     % writeln(W2),
-    !.
-    % label(W1),
-    % label(W2).
+    !,
+    label(W1),
+    label(W2).
+% extractnames([], _).
+% extractnames([[R,T1, T1]|Rest1], [R|Res]) :-
+%     extractnames(Rest1, Res).
 
-constrain([], [], []).
+constrain(_, _, []).
 
 constrain([[R1,T11, T12]|Rest1], [[R2,T21, T22]|Rest2], [[ID,A1,A2,T]|RestP]) :-
-    R1 \= R2,
-    R1 \= A1, R1 \= A2,
-    R2 \= A1, R2 \= A2,
-    T11 = T ; T12 = T,
-    T21 = T ; T22 = T,
+    R1 #\= R2,
+    R1 #\= A1, R1 #\= A2,
+    R2 #\= A1, R2 #\= A2,
+    T11 #= T ; T12 #= T,
+    T21 #= T ; T22 #= T,
     constrain(Rest1, Rest2, RestP).
 
 takeout(X,[X|R],R).  

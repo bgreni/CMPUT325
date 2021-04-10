@@ -1,5 +1,5 @@
 graph_id,vertex_count,chromatic_number,time_seconds,memory_bytes
-large,100,6,
-A,30,10,
-B,120,9,
-C,100,4,
+large,100,6,0.010,10112
+A,30,10,0.005,9560
+B,120,9,0.036,11316
+C,100,4,0.009,10148

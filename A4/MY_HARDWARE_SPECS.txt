@@ -1,0 +1,6 @@
+CPU: Ryzen 7 3700X 8-core @ 3.6Hz base, 4.4Ghz max boost
+    512KiB L1 cache
+    4MiB L2 cache
+    32MiB L3 cache
+
+Memory: 32 GB DDR4
