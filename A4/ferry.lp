@@ -6,9 +6,9 @@
 #show board/3.
 #show move/4.
 #show unboard/3.
-% #show at/3.
-% #show in/3.
-% #show moving/3.
+%#show at/3.
+%#show in/3.
+%#show moving/3.
 
 
 time(0..steps).
@@ -125,6 +125,9 @@ at(Car,Loc,T+1):-    %frame axiom
 
 goal(T+1):-  time(T), goal(T).
      %once goal is achieved, goal(T) is true for all T > k.
+
+:- at(ferry,Loc,T), at(ferry,Loc1,T),Loc != Loc1.
+:- board(Car1,Loc,T),board(Car2,Loc,T),Car1!=Car2. 
 
 goal :- time(T), goal(T).
 :- not goal.

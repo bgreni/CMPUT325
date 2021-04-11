@@ -1,7 +1,15 @@
 /* ---------------------------------------------------------
 Question 1
 
-https://www.ic.unicamp.br/~meidanis/courses/mc336/2009s2/prolog/problemas/
+Part 1:
+1. In the top left corner box 1,3,9 are removed from the domain
+2. In top left corner square 1,3,9,8,7,3,2,6 are removed from the domain
+3. In the bottiom left square 8,7,9,2,5,1,3 are removed from the domain
+4. In the bottom right square 5,1,3,9,8 are removed from the domain
+5. In the top right square 3,2,6,1,4,8,9 are removed from the domain
+
+Part 2: 5
+
 --------------------------------------------------------- */
 
 
@@ -31,7 +39,6 @@ encrypt(W1, W2, W3) :-
     F1 #\= 0, F2 #\= 0, F3 #\= 0,
     label(Letters).
 
-
 word_sum(W, S) :-
     length(W, L),
     W ins 0..9,
@@ -60,14 +67,11 @@ subsetsum(Set, G) :-
 getsol([],[],[]).
 getsol([N|R1], [S|R2], [N|Res]) :-
     S =\= 0,
+    !,
     getsol(R1,R2,Res).
 getsol([N|R1], [S|R2], Res) :-
+    !,
     getsol(R1,R2,Res).
-% subs([], _).
-% subs([X|Xs], Set) :-
-%   append(_, [X|Set1], Set),
-%   subs(Xs, Set1).
-
 
 
 /* ---------------------------------------------------------
@@ -97,21 +101,8 @@ assign(W1, W2) :-
     findall([I,D,A,E], paper(I,D,A,E), Papers),
     workLoadAtMost(K),
     length(Reviewers, L),
-    !,
-    reverse(Reviewers, Rev),
-    perm(Reviewers, R1),
-    perm(Rev, R2),
-    constrain(R1,R2, Ps),
-    maplist([X]>>arg(1,X), R1, W1),
-    maplist([X]>>arg(1,X), R2, W2),
-    % writeln(W1),
-    % writeln(W2),
-    !,
-    label(W1),
-    label(W2).
-% extractnames([], _).
-% extractnames([[R,T1, T1]|Rest1], [R|Res]) :-
-%     extractnames(Rest1, Res).
+    !.
+
 
 constrain(_, _, []).
 
@@ -130,25 +121,8 @@ perm([X|Y],Z) :- perm(Y,W), takeout(X,Z,W).
 perm([],[]).
     
 
-
-% :- initialization main.
-
-% main :-
-    % encrypt([S,E,N,D], [M,O,R,E], [M,O,N,E,Y]),
-%     % run_tests(a1),
-%     halt.
-
-
-:- begin_tests(a1).
-
-% HELPER TESTS
-test(wordsum1, true(S == 23)) :-
-    W is 2,
-    E is 3,
-    word_sum([W,E],S).
-
-:- end_tests(a1).
-
+e1 :- encrypt([S,E,N,D], [M,O,R,E], [M,O,N,E,Y]). 
+e2 :- encrypt([I,T], [I,S], [M,E]). 
 
 q1 :- subsetsum([-1, 1, 2, 3, 7,9,-2, -4],18).
 
