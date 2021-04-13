@@ -94,31 +94,98 @@ reviewer(ken,database,games).
 reviewer(bill,database,ai).
 reviewer(jim,theory,games).
 
+% paper(1,lily,xxx,ai).
+% paper(2,peter,john,database).
+% paper(3,ann,xxx,theory).
+% paper(4,ken,lily,network).
+% paper(5,kris,xxx,games).
+% paper(6,jim,xxx,games).
+% paper(7,bill,xxx,theory).
+% paper(8,bill,lily,ai).
+% paper(9,peter,ann,games).
+
+% reviewer(lily,theory,network).
+% reviewer(john,ai,theory).
+% reviewer(peter,database,network).
+% reviewer(ann,theory,network).
+% reviewer(kris,theory,games).
+% reviewer(ken,database,games).
+% reviewer(bill,database,ai).
+% reviewer(jim,theory,games).
+% reviewer(kevin,theory,games).
+% reviewer(paul,ai,network).
+
 workLoadAtMost(2).
 
-assign(W1, W2) :-
+assign(W1,W2) :-
     findall([X,Y,Z], reviewer(X,Y,Z), Reviewers),
     findall([I,D,A,E], paper(I,D,A,E), Papers),
     workLoadAtMost(K),
     length(Reviewers, L),
-    !.
+    RL is  L * 2,
+    length(Vars, RL),
+    % length(R1s,L),
+    % length(R2s,L),
+    rev_names(1, Reviewers, K, Names),
+    !,
+    global_cardinality(Vars, Names),
+    Vars ins 1..L,
+    % append(R1s, R2s, AllChoices),
+    % constrain(R1s, R2s, Papers, Reviewers),
+    constrain(1, L, Vars, Papers, Reviewers),
+    label(Vars),
+    !,
+    % writeln(Vars),
+    get_sol2(1, L, Vars, Reviewers, Papers, W1, W2).
+    % writeln(W1),
+    % writeln(W2).
 
 
-constrain(_, _, []).
+get_sol2(_,_,_,_,[],[],[]).
 
-constrain([[R1,T11, T12]|Rest1], [[R2,T21, T22]|Rest2], [[ID,A1,A2,T]|RestP]) :-
+get_sol2(I, L, Vars, Reviewers, [P|ResP], [Name1|W1], [Name2|W2]) :-
+    I2 is I + L,
+    nth1(I, Vars, R1),
+    nth1(I2, Vars, R2),
+    nth1(R1, Reviewers, [Name1, T11, T12]),
+    nth1(R2, Reviewers, [Name2, T21, T22]),
+    NextI is I+1,
+    get_sol2(NextI, L, Vars, Reviewers, ResP, W1, W2).
+
+rev_names(_, [], _, []).
+rev_names(I, [[R1,T11,T12]|Rest], K, [I-K|Out]) :-
+    NextI is I+1,
+    rev_names(NextI, Rest, K, Out).
+
+constrain(_, _, _, [], _).
+
+constrain(I, L, Revs, [[ID,A1,A2,T]|RestP], Reviewers) :-
+    I2 is I + L,
+    % I2 < (L*2)-1,
+    nth1(I, Revs, R1),
+    nth1(I2, Revs, R2),
+    nth1(R1, Reviewers, [Name1, T11, T12]),
+    nth1(R2, Reviewers, [Name2, T21, T22]),
     R1 #\= R2,
-    R1 #\= A1, R1 #\= A2,
-    R2 #\= A1, R2 #\= A2,
-    T11 #= T ; T12 #= T,
-    T21 #= T ; T22 #= T,
-    constrain(Rest1, Rest2, RestP).
+    Name1 \= A1, Name1 \= A2,
+    Name2 \= A1, Name2 \= A2,
+    % writeln([T,T11,T12, T21,T22]),
+    (T11 == T ; T12 == T),
+    (T21 == T ; T22 == T),
+    NextI is I+1,
+    constrain(NextI, L, Revs, RestP, Reviewers).
 
-takeout(X,[X|R],R).  
-takeout(X,[F |R],[F|S]) :- takeout(X,R,S).
+% constrain(_, _, [], _).
 
-perm([X|Y],Z) :- perm(Y,W), takeout(X,Z,W).  
-perm([],[]).
+% constrain([R1|Rest1], [R2|Rest2], [[ID,A1,A2,T]|RestP], Reviewers) :-
+%     nth1(R1, Reviewers, [Name1, T11, T12]),
+%     nth1(R2, Reviewers, [Name2, T21, T22]),
+%     R1 #\= R2,
+%     Name1 \= A1, Name1 \= A2,
+%     Name2 \= A1, Name2 \= A2,
+%     T11 == T ; T12 == T,
+%     T21 == T ; T22 == T,
+%     constrain(Rest1, Rest2, RestP, Reviewers).
     
 
 e1 :- encrypt([S,E,N,D], [M,O,R,E], [M,O,N,E,Y]). 
